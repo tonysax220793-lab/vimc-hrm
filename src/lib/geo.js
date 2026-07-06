@@ -1,4 +1,11 @@
-// Tiện ích định vị: khoảng cách geofence, geocode (Google), bản đồ, tính trạng thái giờ công.
+// Tiện ích định vị: khoảng cách geofence, geocode qua OpenStreetMap (miễn phí,
+// KHÔNG cần API key / billing), bản đồ OSM, tính trạng thái giờ công.
+//
+// Lưu ý: dùng dịch vụ công cộng Nominatim của OpenStreetMap — hợp cho app nội bộ
+// lưu lượng thấp (giới hạn ~1 req/giây). Nếu sau này dùng nhiều, cân nhắc dịch vụ
+// có key miễn phí (Geoapify / LocationIQ) hoặc tự dựng Nominatim.
+
+const NOMINATIM = 'https://nominatim.openstreetmap.org'
 
 export function distanceMeters(lat1, lng1, lat2, lng2) {
   if ([lat1, lng1, lat2, lng2].some((v) => v == null || Number.isNaN(v))) return Infinity
@@ -31,41 +38,46 @@ export function computeStatus(type, at, workStart, workEnd, graceMin = 0) {
   }
 }
 
+// Reverse geocode: toạ độ -> địa chỉ (tiếng Việt). Trả '' nếu lỗi.
 export async function reverseGeocode(lat, lng) {
-  const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  if (!key || lat == null || lng == null) return ''
+  if (lat == null || lng == null) return ''
   try {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&language=vi&region=vn&key=${key}`
-    const res = await fetch(url)
+    const url = `${NOMINATIM}/reverse?format=jsonv2&accept-language=vi&lat=${lat}&lon=${lng}`
+    const res = await fetch(url, { headers: { Accept: 'application/json' } })
     const data = await res.json()
-    if (data.status === 'OK' && data.results?.length) return data.results[0].formatted_address || ''
-    return ''
+    return data.display_name || ''
   } catch {
     return ''
   }
 }
 
-// Forward geocode: địa chỉ -> { lat, lng, formatted } hoặc { error, status, errorMessage }.
+// Forward geocode: địa chỉ -> { lat, lng, formatted } hoặc { error }.
 export async function forwardGeocode(address) {
-  const key = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  if (!key) return { error: 'no_key' }
   if (!address || !address.trim()) return { error: 'empty' }
   try {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&language=vi&region=vn&key=${key}`
-    const res = await fetch(url)
+    const url =
+      `${NOMINATIM}/search?format=jsonv2&limit=1&accept-language=vi&countrycodes=vn` +
+      `&q=${encodeURIComponent(address)}`
+    const res = await fetch(url, { headers: { Accept: 'application/json' } })
+    if (!res.ok) return { error: 'http', errorMessage: `HTTP ${res.status}` }
     const data = await res.json()
-    if (data.status === 'OK' && data.results?.length) {
-      const r = data.results[0]
-      return { lat: r.geometry.location.lat, lng: r.geometry.location.lng, formatted: r.formatted_address }
+    if (Array.isArray(data) && data.length) {
+      const r = data[0]
+      return { lat: parseFloat(r.lat), lng: parseFloat(r.lon), formatted: r.display_name }
     }
-    return { error: data.status || 'not_found', status: data.status, errorMessage: data.error_message || '' }
+    return { error: 'not_found' }
   } catch (e) {
     return { error: 'network', errorMessage: String(e?.message || e) }
   }
 }
 
+// Link mở bản đồ (OpenStreetMap).
 export const mapsLink = (lat, lng) =>
-  `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+  `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`
 
-export const embedMap = (lat, lng) =>
-  `https://maps.google.com/maps?q=${lat},${lng}&z=17&hl=vi&output=embed`
+// Bản đồ nhúng OSM (iframe) — không cần API key.
+export const embedMap = (lat, lng) => {
+  const la = Number(lat), lo = Number(lng), d = 0.004
+  const bbox = `${lo - d},${la - d},${lo + d},${la + d}`
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${la},${lo}`
+}

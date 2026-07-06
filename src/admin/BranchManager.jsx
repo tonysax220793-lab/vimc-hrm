@@ -37,26 +37,19 @@ export default function BranchManager({ lockBranchId = null }) {
   const startNew = () => { setEditing('new'); setForm(EMPTY); setStatus('') }
   const cancel = () => { if (!lockBranchId) setEditing(null); setStatus('') }
 
-  // Tìm địa chỉ → toạ độ + hiện bản đồ.
+  // Tìm địa chỉ → toạ độ + hiện bản đồ (OpenStreetMap, miễn phí).
   const findAddress = async () => {
     if (!form.address.trim()) { setStatus('⚠️ Nhập địa chỉ để tìm.'); return }
     setFinding(true); setStatus('')
     const r = await forwardGeocode(form.address)
     setFinding(false)
     if (r.error) {
-      const detail = r.errorMessage ? ` — ${r.errorMessage}` : ''
-      if (r.error === 'no_key') {
-        setStatus('⚠️ Chưa cấu hình Google Maps API key. Thêm VITE_GOOGLE_MAPS_API_KEY vào .env.local (và Vercel) rồi khởi động lại. Tạm thời dùng nút "Dùng vị trí hiện tại" hoặc nhập toạ độ thủ công.')
-      } else if (r.error === 'REQUEST_DENIED') {
-        setStatus('⚠️ Google từ chối yêu cầu: kiểm tra API key, đã BẬT "Geocoding API" chưa, và đã bật Billing chưa.' + detail)
-      } else if (r.error === 'ZERO_RESULTS') {
-        setStatus('⚠️ Không tìm thấy địa chỉ. Nhập cụ thể hơn: số nhà, đường, phường/quận, thành phố.')
-      } else if (r.error === 'OVER_QUERY_LIMIT') {
-        setStatus('⚠️ Vượt hạn mức Google Maps. Kiểm tra Billing/hạn mức của key.')
-      } else if (r.error === 'network') {
-        setStatus('⚠️ Lỗi mạng khi gọi Google.' + detail)
+      if (r.error === 'not_found') {
+        setStatus('⚠️ Không tìm thấy địa chỉ. Thử nhập cụ thể hơn (số nhà, đường, phường/quận, tỉnh/thành). Hoặc dùng "Vị trí hiện tại".')
+      } else if (r.error === 'network' || r.error === 'http') {
+        setStatus('⚠️ Lỗi kết nối dịch vụ bản đồ, thử lại sau vài giây.' + (r.errorMessage ? ` (${r.errorMessage})` : ''))
       } else {
-        setStatus('⚠️ Lỗi tìm địa chỉ: ' + r.error + detail)
+        setStatus('⚠️ Không tìm được vị trí, thử lại.')
       }
       return
     }
@@ -142,7 +135,7 @@ export default function BranchManager({ lockBranchId = null }) {
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <p className="text-[12px] text-on-surface-variant/70">📍 {Number(form.lat).toFixed(5)}, {Number(form.lng).toFixed(5)}</p>
                 <a href={mapsLink(form.lat, form.lng)} target="_blank" rel="noopener noreferrer" className="text-[12px] text-primary font-medium flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[16px]">open_in_new</span> Mở Google Maps
+                  <span className="material-symbols-outlined text-[16px]">open_in_new</span> Mở bản đồ
                 </a>
               </div>
             </div>
