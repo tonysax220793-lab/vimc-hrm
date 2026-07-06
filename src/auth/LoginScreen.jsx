@@ -139,12 +139,12 @@ export default function LoginScreen() {
 
       <main className="relative z-10 w-full max-w-[420px]">
         <div className="glass-card rounded-[28px] px-8 py-10 flex flex-col items-center">
-          <div className="mb-6 w-64 max-w-full h-auto">
+          <div className="mb-5 w-40 max-w-full h-auto">
             <img alt="VIMC — Trung tâm Y học Bản địa Việt Nam" className="w-full h-auto object-contain" src="/assets/logo.png" />
           </div>
 
-          <div className="text-center mb-10">
-            <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-charcoal-ink mb-2">Chào mừng trở lại</h1>
+          <div className="text-center mb-9">
+            <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-charcoal-ink mb-1.5">Chào mừng trở lại</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">Hệ thống Quản lý Nhân sự VIMC</p>
           </div>
 

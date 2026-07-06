@@ -11,10 +11,10 @@ import SettingsPanel from './features/settings/SettingsPanel.jsx'
 import NotificationDrawer from './features/notifications/NotificationDrawer.jsx'
 
 const TABS = [
-  { key: 'attendance', label: 'Chấm công', icon: 'photo_camera' },
-  { key: 'work',       label: 'Công việc', icon: 'task_alt' },
-  { key: 'messages',   label: 'Tin nhắn',  icon: 'chat_bubble' },
-  { key: 'me',         label: 'Cá nhân',   icon: 'person' },
+  { key: 'attendance', label: 'Chấm công', icon: 'photo_camera', title: 'Chấm công' },
+  { key: 'work',       label: 'Công việc', icon: 'task_alt',     title: 'Công việc' },
+  { key: 'messages',   label: 'Tin nhắn',  icon: 'chat_bubble',  title: 'Tin nhắn' },
+  { key: 'me',         label: 'Cá nhân',   icon: 'person',       title: 'Cá nhân' },
 ]
 
 export default function App() {
@@ -90,75 +90,39 @@ export default function App() {
   const canManage = profile.role === 'admin' || profile.role === 'manager'
   const inAdminView = tab === 'me' && meView === 'admin' && canManage
   const goTab = (key) => { setTab(key); if (key !== 'me') setMeView('profile') }
+  const current = TABS.find((t) => t.key === tab)
 
-  const NotifBtn = () => (
-    <button onClick={() => setShowNotif(true)} type="button" className="text-on-surface-variant hover:text-primary transition-colors active:scale-95 duration-150 relative w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container">
-      <span className="material-symbols-outlined text-[22px]">notifications</span>
-      {unreadNotifs > 0 && <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-secondary rounded-full border border-white"></span>}
-    </button>
-  )
-  const SettingsBtn = () => (
-    <button onClick={() => setShowSettings(true)} type="button" className="text-on-surface-variant hover:text-primary transition-colors active:scale-95 duration-150 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container">
-      <span className="material-symbols-outlined text-[22px]">settings</span>
-    </button>
-  )
-  const LogoutBtn = () => (
-    <button onClick={signOut} type="button" className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant/70 hover:text-error hover:bg-error/5 transition-all" title="Đăng xuất">
-      <span className="material-symbols-outlined text-[20px]">logout</span>
-    </button>
-  )
+  const headerTitle = inAdminView
+    ? (profile.role === 'admin' ? 'Khu quản trị' : 'Khu quản lý')
+    : (current?.title || '')
 
   return (
     <div className="min-h-screen bg-surface-container-lowest flex flex-col font-body">
-      {tab === 'attendance' && (
-        <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center w-full px-6 h-16 border-b border-surface-variant/30">
-          <div className="flex items-center gap-2">
-            <img alt="VIMC" className="h-9 w-auto" src="/assets/emblem.png" />
-            <h1 className="font-headline-md text-title-lg font-bold text-primary">Chấm công</h1>
-          </div>
-          <div className="flex items-center gap-4"><NotifBtn /><SettingsBtn /><LogoutBtn /></div>
-        </header>
-      )}
-
-      {tab === 'work' && (
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md w-full px-6 h-16 flex justify-between items-center border-b border-surface-variant/30">
-          <div className="flex items-center gap-3">
-            <img alt="VIMC Logo" className="h-10 w-auto" src="/assets/emblem.png" />
-            <h1 className="font-headline-md text-title-lg font-bold text-primary">VIMC People</h1>
-          </div>
-          <div className="flex items-center gap-4"><NotifBtn /><SettingsBtn /><LogoutBtn /></div>
-        </header>
-      )}
-
-      {tab === 'messages' && (
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md w-full px-6 h-16 flex justify-between items-center border-b border-surface-variant/30">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary text-[24px]">chat</span>
-            <h1 className="font-headline-md text-title-lg font-bold text-primary">Tin nhắn nội bộ</h1>
-          </div>
-          <div className="flex items-center gap-4"><NotifBtn /><LogoutBtn /></div>
-        </header>
-      )}
-
-      {tab === 'me' && (
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md flex justify-between items-center w-full px-6 h-16 border-b border-surface-variant/30">
-          <div className="flex items-center gap-2 min-w-0">
-            {inAdminView && (
-              <button onClick={() => setMeView('profile')} type="button" className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
-                <span className="material-symbols-outlined">arrow_back</span>
-              </button>
-            )}
-            <h1 className="font-headline-md text-title-lg font-bold text-primary truncate">
-              {inAdminView ? (profile.role === 'admin' ? 'Khu quản trị' : 'Khu quản lý') : 'Cá nhân'}
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <NotifBtn />
-            <SettingsBtn />
-            <LogoutBtn />
-          </div>
-        </header>
-      )}
+      {/* Header thống nhất cho mọi tab */}
+      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md flex justify-between items-center w-full px-5 h-16 border-b border-surface-variant/30">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {inAdminView ? (
+            <button onClick={() => setMeView('profile')} type="button" className="w-8 h-8 -ml-1 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+          ) : (
+            <img alt="VIMC" className="h-8 w-auto" src="/assets/emblem.png" />
+          )}
+          <h1 className="font-headline-md text-title-lg font-bold text-primary truncate">{headerTitle}</h1>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowNotif(true)} type="button" className="text-on-surface-variant hover:text-primary transition-colors active:scale-95 relative w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <span className="material-symbols-outlined text-[22px]">notifications</span>
+            {unreadNotifs > 0 && <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-secondary rounded-full border border-white"></span>}
+          </button>
+          <button onClick={() => setShowSettings(true)} type="button" className="text-on-surface-variant hover:text-primary transition-colors active:scale-95 w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <span className="material-symbols-outlined text-[22px]">settings</span>
+          </button>
+          <button onClick={signOut} type="button" className="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant/70 hover:text-error hover:bg-error/5 transition-all" title="Đăng xuất">
+            <span className="material-symbols-outlined text-[20px]">logout</span>
+          </button>
+        </div>
+      </header>
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto">
