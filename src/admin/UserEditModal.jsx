@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient.js'
 import { ROLE_OPTIONS } from '../lib/roles.js'
 
 // Sửa nhân sự: đổi vai trò/chi nhánh (bổ nhiệm), chức danh, khoá/mở, đổi PIN, xóa.
 // isManager: khoá vai trò=employee & chi nhánh của quản lý.
-export default function UserEditModal({ user, branches, isManager, managerBranch, onClose, onSaved }) {
+export default function UserEditModal({ user, branches: branchesProp = [], isManager, managerBranch, onClose, onSaved }) {
+  const [branches, setBranches] = useState(branchesProp)
   const [fullName, setFullName] = useState(user.full_name || '')
   const [role, setRole] = useState(user.role || 'employee')
   const [title, setTitle] = useState(user.title || '')
@@ -14,6 +15,13 @@ export default function UserEditModal({ user, branches, isManager, managerBranch
   const [busy, setBusy] = useState(false)
   const [confirmDel, setConfirmDel] = useState(false)
   const [msg, setMsg] = useState('')
+
+  // Luôn nạp danh sách chi nhánh mới nhất khi mở (tránh bị cũ so với chi nhánh vừa tạo).
+  useEffect(() => {
+    supabase.from('branches').select('id, name').order('name').then(({ data }) => {
+      if (data) setBranches(data)
+    })
+  }, [])
 
   const saveProfile = async () => {
     setBusy(true); setMsg('')
@@ -107,7 +115,6 @@ export default function UserEditModal({ user, branches, isManager, managerBranch
             Lưu thay đổi
           </button>
 
-          {/* Đổi PIN */}
           <div className="pt-3 border-t border-outline-variant/30">
             <label className="block text-[13px] font-medium text-charcoal-ink mb-1">Đặt lại PIN đăng nhập</label>
             <div className="flex gap-2">
@@ -117,7 +124,6 @@ export default function UserEditModal({ user, branches, isManager, managerBranch
             </div>
           </div>
 
-          {/* Xóa */}
           <div className="pt-3 border-t border-outline-variant/30">
             {confirmDel ? (
               <div className="space-y-2">
