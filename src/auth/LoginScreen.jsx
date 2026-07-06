@@ -23,9 +23,6 @@ export default function LoginScreen() {
   const fallbackRef = useRef(false)
   const locked = attempts >= MAX_ATTEMPTS
 
-  // Tìm kiếm danh bạ CÓ KIỂM SOÁT phía server (login_lookup) theo tên đang gõ,
-  // giảm việc lộ toàn bộ danh bạ trước khi đăng nhập. Nếu login_lookup chưa
-  // được deploy, tự động lùi về login_directory (bản cũ).
   useEffect(() => {
     const q = query.trim()
     if (fallbackRef.current) return
@@ -63,8 +60,6 @@ export default function LoginScreen() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Gọi Edge Function login-guard (khóa phía server). Không chặn luồng nếu
-  // hàm chưa deploy — trả về null để rơi về khóa phía client.
   const guard = async (action, ok) => {
     try {
       const { data, error: fnErr } = await supabase.functions.invoke('login-guard', {
@@ -134,7 +129,8 @@ export default function LoginScreen() {
           box-shadow: 0 24px 64px -12px rgba(6, 108, 65, 0.15);
         }
         .pin-btn:active { transform: scale(0.95); background-color: #1F7A4D !important; color: white !important; }
-        input:focus + label, input:not(:placeholder-shown) + label { transform: translateY(-24px) scale(0.85); color: #1F7A4D; }
+        input:focus + label,
+        input:not(:placeholder-shown) + label { opacity: 0; visibility: hidden; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bec9bf; border-radius: 10px; }
       `}</style>
@@ -143,10 +139,9 @@ export default function LoginScreen() {
 
       <main className="relative z-10 w-full max-w-[420px]">
         <div className="glass-card rounded-[28px] px-8 py-10 flex flex-col items-center">
-          <div className="mb-8 w-24 h-auto">
-            <img alt="VIMC People Logo" className="w-full h-auto object-contain" src="/assets/vimc-emblem.svg" />
+          <div className="mb-6 w-64 max-w-full h-auto">
+            <img alt="VIMC — Trung tâm Y học Bản địa Việt Nam" className="w-full h-auto object-contain" src="/assets/logo.png" />
           </div>
-          <p className="font-label-lg text-label-lg text-primary text-center mb-6">Trung Tâm Y học bản địa Việt Nam</p>
 
           <div className="text-center mb-10">
             <h1 className="font-headline-lg-mobile text-headline-lg-mobile text-charcoal-ink mb-2">Chào mừng trở lại</h1>
@@ -156,7 +151,7 @@ export default function LoginScreen() {
           <form className="w-full space-y-6" onSubmit={handleLogin}>
             <div className="relative" ref={suggestionsRef}>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-4 text-outline">search</span>
+                <span className="material-symbols-outlined absolute left-4 text-outline z-10">search</span>
                 <input
                   autoComplete="off"
                   className="w-full h-14 pl-12 pr-4 bg-white border border-outline-variant rounded-xl font-body-lg text-body-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-transparent"
@@ -172,7 +167,10 @@ export default function LoginScreen() {
                   }}
                   onFocus={() => setShowSuggestions(true)}
                 />
-                <label className="absolute left-12 top-4 font-body-lg text-body-lg text-on-surface-variant transition-all pointer-events-none" htmlFor="name-input">
+                <label
+                  className="absolute left-12 top-1/2 -translate-y-1/2 font-body-lg text-body-lg text-on-surface-variant/70 transition-opacity duration-150 pointer-events-none"
+                  htmlFor="name-input"
+                >
                   Họ và tên
                 </label>
               </div>
@@ -206,7 +204,7 @@ export default function LoginScreen() {
 
             <div className={`relative transition-all duration-300 ${selected ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
               <div className="relative flex items-center">
-                <span className="material-symbols-outlined absolute left-4 text-outline">lock</span>
+                <span className="material-symbols-outlined absolute left-4 text-outline z-10">lock</span>
                 <input
                   className="w-full h-14 pl-12 pr-12 bg-white border border-outline-variant rounded-xl font-body-lg text-body-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder-transparent"
                   id="pin-input"
@@ -220,11 +218,21 @@ export default function LoginScreen() {
                   }}
                   disabled={!selected || locked}
                 />
-                <label className="absolute left-12 top-4 font-body-lg text-body-lg text-on-surface-variant transition-all pointer-events-none" htmlFor="pin-input">
+                <label
+                  className="absolute left-12 top-1/2 -translate-y-1/2 font-body-lg text-body-lg text-on-surface-variant/70 transition-opacity duration-150 pointer-events-none"
+                  htmlFor="pin-input"
+                >
                   Mã PIN
                 </label>
-                <button className="absolute right-4 text-outline hover:text-primary transition-colors" onClick={() => setShowPin((s) => !s)} type="button" disabled={!selected}>
-                  <span className="material-symbols-outlined">{showPin ? 'visibility_off' : 'visibility'}</span>
+                <button
+                  className="absolute right-4 text-outline hover:text-primary transition-colors z-10"
+                  onClick={() => setShowPin((s) => !s)}
+                  type="button"
+                  disabled={!selected}
+                >
+                  <span className="material-symbols-outlined">
+                    {showPin ? 'visibility_off' : 'visibility'}
+                  </span>
                 </button>
               </div>
             </div>

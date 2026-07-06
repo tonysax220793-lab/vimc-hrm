@@ -89,7 +89,6 @@ export default function App() {
 
   const canManage = profile.role === 'admin' || profile.role === 'manager'
   const inAdminView = tab === 'me' && meView === 'admin' && canManage
-
   const goTab = (key) => { setTab(key); if (key !== 'me') setMeView('profile') }
 
   const NotifBtn = () => (
@@ -114,7 +113,7 @@ export default function App() {
       {tab === 'attendance' && (
         <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center w-full px-6 h-16 border-b border-surface-variant/30">
           <div className="flex items-center gap-2">
-            <div className="lotus-petal rotate-[-45deg] opacity-80" style={{ width: '24px', height: '16px', backgroundColor: '#C6952B', clipPath: 'ellipse(50% 100% at 50% 100%)' }}></div>
+            <img alt="VIMC" className="h-9 w-auto" src="/assets/emblem.png" />
             <h1 className="font-headline-md text-title-lg font-bold text-primary">Chấm công</h1>
           </div>
           <div className="flex items-center gap-4"><NotifBtn /><SettingsBtn /><LogoutBtn /></div>
@@ -124,7 +123,7 @@ export default function App() {
       {tab === 'work' && (
         <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md w-full px-6 h-16 flex justify-between items-center border-b border-surface-variant/30">
           <div className="flex items-center gap-3">
-            <img alt="VIMC Logo" className="h-10 w-auto" src="/assets/vimc-logo.svg" />
+            <img alt="VIMC Logo" className="h-10 w-auto" src="/assets/emblem.png" />
             <h1 className="font-headline-md text-title-lg font-bold text-primary">VIMC People</h1>
           </div>
           <div className="flex items-center gap-4"><NotifBtn /><SettingsBtn /><LogoutBtn /></div>
