@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="Hoa văn Đông Sơn">
+  <g fill="none" stroke="#1F7A4D" stroke-width="1.5">
+    <circle cx="300" cy="300" r="290"/>
+    <circle cx="300" cy="300" r="250"/>
+    <circle cx="300" cy="300" r="210"/>
+    <circle cx="300" cy="300" r="120"/>
+  </g>
+  <!-- ngôi sao trung tâm 14 cánh (mô típ trống đồng) -->
+  <g fill="#1F7A4D">
+    <g id="ray">
+      <polygon points="300,180 312,296 300,300 288,296"/>
+    </g>
+    <use href="#ray" transform="rotate(25.71 300 300)"/>
+    <use href="#ray" transform="rotate(51.43 300 300)"/>
+    <use href="#ray" transform="rotate(77.14 300 300)"/>
+    <use href="#ray" transform="rotate(102.86 300 300)"/>
+    <use href="#ray" transform="rotate(128.57 300 300)"/>
+    <use href="#ray" transform="rotate(154.29 300 300)"/>
+    <use href="#ray" transform="rotate(180 300 300)"/>
+    <use href="#ray" transform="rotate(205.71 300 300)"/>
+    <use href="#ray" transform="rotate(231.43 300 300)"/>
+    <use href="#ray" transform="rotate(257.14 300 300)"/>
+    <use href="#ray" transform="rotate(282.86 300 300)"/>
+    <use href="#ray" transform="rotate(308.57 300 300)"/>
+    <use href="#ray" transform="rotate(334.29 300 300)"/>
+  </g>
+  <circle cx="300" cy="300" r="30" fill="#C6952B"/>
+</svg>

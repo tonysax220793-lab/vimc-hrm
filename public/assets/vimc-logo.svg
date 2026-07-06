@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" width="240" height="64" role="img" aria-label="VIMC People">
+  <circle cx="32" cy="32" r="28" fill="#1F7A4D"/>
+  <path d="M32 50 C22 42 18 33 18 24 C26 26 30 33 32 43 C34 33 38 26 46 24 C46 33 42 42 32 50 Z" fill="#EAF5EE"/>
+  <circle cx="32" cy="21" r="3.2" fill="#C6952B"/>
+  <text x="72" y="34" font-family="'Be Vietnam Pro',Arial,sans-serif" font-size="24" font-weight="800" fill="#155A36">VIMC</text>
+  <text x="72" y="52" font-family="'Be Vietnam Pro',Arial,sans-serif" font-size="13" font-weight="500" fill="#6B7C74" letter-spacing="1">People</text>
+</svg>

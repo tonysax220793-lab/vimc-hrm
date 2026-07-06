@@ -1,0 +1,10 @@
+/* Tailwind entrypoint — thay cho CDN cdn.tailwindcss.com.
+   Nạp trước App.css để các style tuỳ biến trong App.css ghi đè khi cần. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cấu hình mặc định cho icon Material Symbols (trước đây đặt inline trong index.html) */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160" role="img" aria-label="VIMC">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2FAE5E"/>
+      <stop offset="1" stop-color="#1F7A4D"/>
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="76" fill="url(#g)"/>
+  <circle cx="80" cy="80" r="66" fill="none" stroke="#C6952B" stroke-width="1.5" opacity="0.6"/>
+  <path d="M80 118 C58 104 48 84 48 66 C64 70 73 82 80 100 C87 82 96 70 112 66 C112 84 102 104 80 118 Z"
+        fill="#EAF5EE"/>
+  <circle cx="80" cy="60" r="6.5" fill="#C6952B"/>
+  <text x="80" y="146" text-anchor="middle" font-family="'Be Vietnam Pro',Arial,sans-serif" font-size="18" font-weight="800" fill="#155A36" letter-spacing="3">VIMC</text>
+</svg>
